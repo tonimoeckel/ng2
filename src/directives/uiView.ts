@@ -12,6 +12,8 @@ import {Ng2ViewConfig} from "../statebuilders/views";
 import {ResolveContext, NATIVE_INJECTOR_TOKEN} from "ui-router-core";
 import {flattenR} from "ui-router-core";
 import {MergeInjector} from "../mergeInjector";
+import {Resolve} from "../decorators";
+
 
 /** @hidden */
 let id = 0;
@@ -27,6 +29,8 @@ interface InputMapping {
   token: string;
   prop: string;
 }
+
+
 
 /**
  * Given a component class, gets the inputs of styles:
@@ -45,7 +49,7 @@ const ng2ComponentInputs = (ng2CompClass: Type<any>) => {
       // -> flattened to [ { key: string, anno: annotation } ] tuples
       .reduce((acc, tuple) => acc.concat(tuple.annoArr.map(anno => ({ key: tuple.key, anno }))), [])
       // Only Inputs
-      .filter(tuple => tuple.anno instanceof Input)
+      .filter(tuple => tuple.anno instanceof Input || tuple.anno instanceof Resolve)
       // If they have a bindingPropertyName, i.e. "@Input('foo') _foo", then foo, else _foo
       .map(tuple => ({ token: tuple.anno.bindingPropertyName || tuple.key, prop: tuple.key }));
 
